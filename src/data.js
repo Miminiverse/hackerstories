@@ -68,3 +68,7 @@ const getAsyncStories = () =>
             resolve({ data: { stories: initialStories } }), 1000))
 
 export default getAsyncStories
+
+
+// export const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
+

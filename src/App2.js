@@ -313,3 +313,158 @@ export default App;
 // }
 
 // export default App
+
+
+import * as React from 'react';
+import { API_ENDPOINT } from './data';
+import { useState, useEffect } from 'react';
+
+function storiesReducer(state, action) {
+  switch (action.type) {
+    case 'SET_STORIES':
+      return action.payload
+    default:
+      throw new Error();
+  }
+}
+
+const App = () => {
+  const [stories, dispatchStories] = React.useReducer(storiesReducer, [])
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    fetch(`${API_ENDPOINT}react`)
+      .then((res) => res.json())
+      .then(result => {
+        dispatchStories({
+          type: 'SET_STORIES',
+          payload: result.hits,
+        });
+        setIsLoading(false);
+      })
+      .catch(setIsError(true));
+  }, []);
+
+  return (
+    <div>
+      <h1> My Hacker Stories </h1>
+      <hr />
+
+      <List list={stories} />
+
+    </div>
+  )
+}
+
+
+
+const List = ({ list }) => {
+
+  return (
+    <ul>
+      {list.map((item) => (
+        <li key={item.objectID} >
+          <span>
+            <a href={item.url} > {item.title} </a>
+          </span>
+          {/* < Item item={item} /> */}
+        </li>
+      )
+      )}
+    </ul>
+  )
+}
+
+// const Item = (props) => (
+//     <ul>
+//         <li key={props.item.objectID} >
+//             <span>    {props.item.author} </span>
+//         </li>
+
+//     </ul>
+// )
+
+export default App;
+
+
+import * as React from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import getAsyncStories from './data';
+import AddList from './components/AddList'
+import Search from './components/Search'
+import { useState, useEffect } from 'react';
+import { API_ENDPOINT } from './data';
+
+function storiesReducer(state, action) {
+  switch (action.type) {
+    case 'SET_STORIES':
+      return action.payload
+    default:
+      throw new Error();
+  }
+}
+
+
+const App = () => {
+
+  const [stories, dispatchStories] = React.useReducer(storiesReducer, [])
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
+  const [searchTerm, setSearchTerm] = useState("")
+
+  React.useEffect(() => {
+    if (!searchTerm) return;
+    setIsLoading(true);
+    fetch(`${API_ENDPOINT}${searchTerm}`)
+      .then((res) => res.json())
+      .then(result => {
+        dispatchStories({
+          type: 'SET_STORIES',
+          payload: result.hits,
+        });
+        setIsLoading(false);
+      })
+      .catch(setIsError(true));
+  }, [searchTerm]);
+
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+      <hr />
+      {isError && <p>Something went wrong</p>}
+
+      <hr />
+      <List list={stories.data} />
+    </div>
+  );
+};
+const List = ({ list }) => {
+
+  return (
+    <ul>
+      {list.map((item) => (
+        <li key={item.objectID} >
+          <span>
+            <a href={item.url} > {item.title} </a>
+          </span>
+          < Item item={item} />
+        </li>
+      )
+      )}
+    </ul>
+  )
+}
+
+const Item = (props) => (
+  <ul>
+    <li key={props.item.objectID} >
+      <span>    {props.item.author} </span>
+      <span>    {props.item.points} </span>
+    </li>
+
+  </ul>
+)
+
+export default App;

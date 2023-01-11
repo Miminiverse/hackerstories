@@ -1,10 +1,12 @@
 
 
-export default function Item({ item, filteredList, setStories }) {
+export default function Item({ item, filteredList, dispatchStories }) {
 
-    function handleRemove(objectID) {
-        const newRemoveList = filteredList.filter((story) => story.objectID !== objectID)
-        setStories(newRemoveList)
+    function handleRemove(item) {
+        dispatchStories({
+            type: 'REMOVE_STORIES',
+            payload: item,
+        })
     }
 
     function handleToggleComplete(objectID) {
@@ -19,7 +21,10 @@ export default function Item({ item, filteredList, setStories }) {
             return story
         }
         )
-        setStories(newToggleList)
+        dispatchStories({
+            type: "SET_STORIES",
+            payload: newToggleList
+        })
     }
 
     return (
@@ -30,7 +35,7 @@ export default function Item({ item, filteredList, setStories }) {
             </span>
             <button
                 type="button"
-                onClick={() => handleRemove(item.objectID)}>
+                onClick={() => handleRemove(item)}>
                 Remove
             </button>
             <button

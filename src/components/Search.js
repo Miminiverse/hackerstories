@@ -3,7 +3,7 @@ import * as React from 'react';
 import SearchList from './SearchList'
 
 
-export default function Search({ stories, setStories }) {
+export default function Search({ stories, dispatchStories }) {
     const [searchTerm, setSearchTerm] = React.useState(localStorage.getItem('search'));
     // const [show, setShow] = useState(false);
 
@@ -35,7 +35,7 @@ export default function Search({ stories, setStories }) {
     function searchList() {
         return (
             <div>
-                <SearchList filteredList={filteredList} setStories={setStories} />
+                <SearchList filteredList={filteredList} dispatchStories={dispatchStories} />
             </div>
         )
     }

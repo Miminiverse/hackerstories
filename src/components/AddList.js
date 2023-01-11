@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useState, useEffect } from 'react';
 
 
-export default function AddList({ stories, setStories }) {
+export default function AddList({ stories, dispatchStories }) {
     // const useSemiPersistentState = (key, initialState) => {
     //     const [value, setValue] = useState(
     //         localStorage.getItem(key) || initialState
@@ -18,22 +18,25 @@ export default function AddList({ stories, setStories }) {
 
     const [name, setName] = useState("");
 
-    const handleChange = (e) => {
-        setName(e.target.value)
-    }
 
-    const handleAdd = () => {
-        const newList = stories.concat({ name, objectID: uuidv4() });
-        setStories(newList);
+    const handleAdd = (e) => {
+        e.preventDefault()
+        dispatchStories({
+            type: "ADD_STORIES",
+            payload: { name: name },
+        })
         setName("");
     }
 
     return (
-        <div className="navy georgia ma0 grow">
+        <form onSubmit={handleAdd}>
             <h2 className="f2" >Add your story</h2>
-            <input type="text" value={name} onChange={handleChange} placeholder="React" />
-            <button type="button" onClick={handleAdd}> Add </button>
-
-        </div>
+            <input
+                type="text"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="React" />
+            <button type="submit" > Add </button>
+        </form>
     )
 }
